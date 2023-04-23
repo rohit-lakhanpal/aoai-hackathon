@@ -1,9 +1,7 @@
-// src/routes.ts
-
 // pages
 import Home from "../pages/Home";
-import About from "../pages/About";
-// import Products from "./pages/Products";
+import SpeechToText from "../pages/SpeechToText";
+import TextToSpeech from "../pages/TextToSpeech";
 
 // other
 import {FC} from "react";
@@ -26,17 +24,17 @@ export const routes: Array<Route> = [
         component: Home
     },
     {
-        key: 'about-route',
-        title: 'About',
-        path: '/about',
+        key: 'speech-to-text-route',
+        title: 'Speech to Text',
+        path: '/speech-to-text',
         enabled: true,
-        component: About
+        component: SpeechToText
     },
-    // {
-    //     key: 'products-route',
-    //     title: 'Products',
-    //     path: '/products',
-    //     enabled: true,
-    //     component: Products
-    // }
+    {
+        key: 'text-to-speech-route',
+        title: 'Text to Speech',
+        path: '/text-to-speech',
+        enabled: true,
+        component: TextToSpeech
+    }
 ]

@@ -1,7 +1,7 @@
 import React, {ReactElement, FC} from "react";
 import {Box, Container, Typography} from "@mui/material";
 
-const Home: FC<any> = (): ReactElement => {
+const About: FC<any> = (): ReactElement => {
     return (
         <Box sx={{
             flexGrow: 1,
@@ -9,7 +9,7 @@ const Home: FC<any> = (): ReactElement => {
             display: 'block',            
             padding: '2rem',
         }}>
-            <Container maxWidth="xl">
+           <Container maxWidth="xl">
                 <Typography variant="h3">Home</Typography>
                 <Typography variant="body1">Explain the purpose of the demo.</Typography>
             </Container>
@@ -17,4 +17,4 @@ const Home: FC<any> = (): ReactElement => {
     );
 };
 
-export default Home;
+export default About;
