@@ -6,6 +6,11 @@ const config = {
             "key": process.env.SPEECH_KEY,
             "region": process.env.SPEECH_REGION,
             "endpointUrlOptional": process.env.SPEECH_ENDPOINT_URL_OPTIONAL // For custom endpoints. (optional)
+        },
+        "language": {
+            "key": process.env.LANGUAGE_KEY,
+            "region": process.env.LANGUAGE_REGION,
+            "endpointUrl": process.env.LANGUAGE_ENDPOINT_URL
         }
     },
     "validate": function() {

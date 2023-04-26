@@ -18,4 +18,11 @@ var apiBase = '/api';
 app.use(`${apiBase}/`, require('./routes/index'));
 app.use(apiBase + '/speech/token', require('./routes/speech/token'));
 
+app.use(apiBase + '/language/analyse-sentiment', require('./routes/language/analyse-sentiment'));
+app.use(apiBase + '/language/extract-key-phrases', require('./routes/language/extract-key-phrases'));
+
+app.use(apiBase + '/language/recognise-entities', require('./routes/language/recognise-entities'));
+app.use(apiBase + '/language/recognise-healthcare-entities', require('./routes/language/recognise-healthcare-entities'));
+app.use(apiBase + '/language/recognise-pii', require('./routes/language/recognise-pii'));
+
 module.exports = app;

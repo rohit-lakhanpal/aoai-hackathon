@@ -63,12 +63,14 @@ const TextToSpeech: FC<any> = (): ReactElement => {
     };
 
     const onWordBoundary = (sender: any, event: {privText:string, privAudioOffset: number, privDuration: number}) => {
-        setLastWordOffset(event.privAudioOffset / 10000)
+        var wordOffset = event.privAudioOffset / 10000;
+        setLastWordOffset(wordOffset)
         setTimeout(() => {
+            // YOUR_CODE_HERE
             setWordsSpoken((prev:string) => {
                 return prev + " " + event.privText;
             });
-        }, (event.privAudioOffset / 10000));
+        }, wordOffset);
     }
 
     const onSynthesisCompleted = () => {        

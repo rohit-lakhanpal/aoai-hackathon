@@ -33,6 +33,7 @@ const SpeechToText: FC<any> = (): ReactElement => {
         if (e.result.reason === speechsdk.ResultReason.RecognizedSpeech) {
             console.log(`RECOGNIZED: Text=${e.result.text}`);
             setTranscription((prev:any) => {
+                // YOUR_CODE_HERE
                 return [...prev, e.result.text];
             })
         } else if (e.result.reason === speechsdk.ResultReason.NoMatch) {
