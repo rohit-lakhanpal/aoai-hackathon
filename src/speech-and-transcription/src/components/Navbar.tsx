@@ -103,10 +103,10 @@ const Navbar: FC = (): ReactElement => {
           <Typography
             variant="h6"
             noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+            component="div"            
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, margin: "1rem" }}
           >
-            <img src={appLogo} alt="Logo" height={80}/>        
+            <img src={appLogo} alt="Logo" height={80} />        
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Box

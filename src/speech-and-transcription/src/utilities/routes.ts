@@ -1,6 +1,7 @@
 // pages
 import Home from "../pages/Home";
 import SpeechToText from "../pages/SpeechToText";
+import TextAnalysis from "../pages/TextAnalysis";
 import TextToSpeech from "../pages/TextToSpeech";
 
 // other
@@ -36,5 +37,12 @@ export const routes: Array<Route> = [
         path: '/text-to-speech',
         enabled: true,
         component: TextToSpeech
+    },    
+    {
+        key: 'text-analysis-route',
+        title: 'Text Analysis',
+        path: '/text-analysis',
+        enabled: true,
+        component: TextAnalysis
     }
 ]

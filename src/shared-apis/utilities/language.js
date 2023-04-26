@@ -90,6 +90,8 @@ const languageUtilities = {
       entities: [],
       entityRelations: [],
     };
+
+    // TODO: Cleanup this code
     for await (const result of results) {
       recognised.summary.push(`- Document ${result.id}`);
       if (!result.error) {

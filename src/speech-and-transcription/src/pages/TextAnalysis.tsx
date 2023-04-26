@@ -1,18 +1,17 @@
 import React, {ReactElement, FC, useState, useEffect} from "react";
-import {Box, Button, Container, Typography, Grid, LinearProgress, Paper, Stack, Alert, TextField } from "@mui/material";
-import CampaignIcon from '@mui/icons-material/Campaign';
-import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-import { speechService } from '../services/speechService';
-import * as speechsdk from "microsoft-cognitiveservices-speech-sdk";
+import {Box, Container, Typography, Grid, Paper, TextField, Button, Alert, LinearProgress, Stack, FormControl, InputLabel, Select, MenuItem} from "@mui/material";
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import {languageService } from '../services/languageService';
 
-const TextToSpeech: FC<any> = (): ReactElement => {
-    const [lastWordOffset, setLastWordOffset] = useState<number>(0);
-    const [wordsSpoken, setWordsSpoken] = useState<string>('');
+const TextAnalysis: FC<any> = (): ReactElement => {
     const [transcript, setTranscript] = useState<string>('');
-    const [isSpeaking, setIsSpeaking] = useState<boolean>(false);    
-    const [synthesiser, setSynthesiser] = useState<any>(null);
+    const [analysisType, setAnalysisType] = useState<string>('');
+    const [isAnalysing, setIsAnalysing] = useState<boolean>(false);
+    const [analysedTranscript, setAnalysedTranscript] = useState<string>('');
     const [errors, setErrors] = useState<any>([]);
     const [warnings, setWarnings] = useState<any>([]);
+
+    
 
     const binErrors = (idx: number) => {
         // remove the warning at idx
@@ -31,63 +30,34 @@ const TextToSpeech: FC<any> = (): ReactElement => {
         });
     }
 
-    const beginSpeaking = async () => {
+    const beginAnalysis = async () => {
         if (transcript.length === 0) {
             setErrors((prev:any) => {
-                return [...prev, 'Transcript is empty, nothing to speak!'];
+                return [...prev, 'Transcript is empty, nothing to analyse!'];
             });
         } else {
-            setIsSpeaking(true);
-            synthesiser.speakTextAsync(transcript, (result: any) => {
-                if (result.reason === speechsdk.ResultReason.SynthesizingAudioCompleted) {
-                    console.log("synthesis finished.");                    
-                } else {
-                    console.error("Speech synthesis cancelled, " + result.errorDetails +
-                        "\nDid you update the subscription info?");  
-                        
-                    setIsSpeaking(false);                  
-                }
-            }, (err: string) => {
-                console.error(err);
+            if(analysisType === undefined || analysisType.length === 0){
                 setErrors((prev:any) => {
-                    return [...prev, err];
-                });
-                setIsSpeaking(false);
-            });
-
+                    return [...prev, 'Choose an analysis type to conduct!'];
+                }); 
+            } else {
+                setIsAnalysing(true);
+                try {
+                    var result = await languageService.analyseTextAsync(transcript, analysisType);                    
+                    setAnalysedTranscript(result);
+                } catch (error) {
+                    console.log(error);
+                    setErrors((prev:any) => {
+                        return [...prev, "Error analysing text."];
+                    });
+                } finally {
+                    setIsAnalysing(false);
+                }
+            }
+            
+            
         }
     };
-
-    const stopSpeaking = async () => {
-        setIsSpeaking(false);            
-    };
-
-    const onWordBoundary = (sender: any, event: {privText:string, privAudioOffset: number, privDuration: number}) => {
-        var wordOffset = event.privAudioOffset / 10000;
-        setLastWordOffset(wordOffset)
-        setTimeout(() => {
-            // YOUR_CODE_HERE
-            setWordsSpoken((prev:string) => {
-                return prev + " " + event.privText;
-            });
-        }, wordOffset);
-    }
-
-    const onSynthesisCompleted = () => {        
-        setTimeout(() => {
-            setWordsSpoken('');
-            setIsSpeaking(false);
-        }, (lastWordOffset));
-    }
-
-    const initialise = async () => {
-        // Create an instance of the speech recogniser        
-        setSynthesiser(await speechService.initialiseSynthesizerAsync(onSynthesisCompleted, onWordBoundary));
-    };
-
-    useEffect(() => {
-        initialise();
-    }, []);
 
     return (
         <Box sx={{
@@ -100,9 +70,9 @@ const TextToSpeech: FC<any> = (): ReactElement => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Typography variant="h3">
-                            <RecordVoiceOverIcon fontSize="inherit" style={{verticalAlign:'middle', display: 'inline-flex'}} />
+                            <QueryStatsIcon fontSize="inherit" style={{verticalAlign:'middle', display: 'inline-flex'}} />
                             {' '}
-                            Text to Speech
+                            Text Analysis
                         </Typography>
                     </Grid>
                     <Grid item xs={12}> 
@@ -119,30 +89,54 @@ const TextToSpeech: FC<any> = (): ReactElement => {
                                     onChange={(e) => {
                                         setTranscript(e.target.value);
                                     }}
-                                    disabled={isSpeaking}
                                 />
                             </Paper>                                                        
                     </Grid>
-                    <Grid item xs={12}>
-                        <Button onClick={beginSpeaking}
-                            variant="contained"
-                            startIcon={<CampaignIcon />}
+                    <Grid item xs={12}>  
+                        <FormControl fullWidth>
+                            <InputLabel id="analysis-label">Choose analysis type</InputLabel>
+                            <Select
+                                labelId="analysis-label"                                   
+                                value={analysisType}
+                                label="Choose analysis type"
+                                style={{                                        
+                                    marginBottom: '1rem'
+                                }}
+                                onChange={(v)=>{
+                                    setAnalysisType(v.target.value);
+                                }}
+                                >
+                                <MenuItem value={'analyse-sentiment'}>Analyse Sentiment</MenuItem>
+                                <MenuItem value={'extract-key-phrases'}>Extract Key Phrases</MenuItem>
+                                <MenuItem value={'recognise-entities'}>Recognise Entities</MenuItem>
+                                <MenuItem value={'recognise-healthcare-entities'}>Recognise Entities (Healthcare)</MenuItem>
+                                <MenuItem value={'recognise-pii'}>Recognise Pii</MenuItem>                             
+                            </Select>
+                        </FormControl>               
+                        <Button onClick={beginAnalysis}
+                            variant="contained"                                
                             style={{
                                 marginRight: '1rem'
                             }}
+                            startIcon={<QueryStatsIcon />}
                             >
-                            Begin speaking ...
+                            Begin analysis ...
                         </Button>
                                             
-                        <Button onClick={stopSpeaking}
+                        <Button onClick={()=>{
+                            setTranscript('');
+                            setAnalysedTranscript('');
+                            setAnalysisType('');
+                            setIsAnalysing(false);
+                        }}
                             variant="contained"
-                            color="error"
-                            startIcon={<CampaignIcon />}>
-                            Stop speaking.
+                            color="secondary"
+                            >
+                            Reset.
                         </Button>
-                        <Box hidden={!isSpeaking}>
+                        <Box hidden={!isAnalysing}>
                             <Alert severity="info">
-                                Speaking in progress!
+                                Analysis in progress!
                             </Alert>
                             <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={2}>                                
                                     <LinearProgress color="info" />
@@ -164,14 +158,14 @@ const TextToSpeech: FC<any> = (): ReactElement => {
                         </Box>
                     </Grid> 
                     <Grid item xs={12}>
-                    <TextField                                    
-                            label="Spoken words will appear here ..."
+                        <TextField                                    
+                            label="Analysed text will appear here ..."
                             multiline
                             fullWidth                                    
                             disabled={true}
-                            value={wordsSpoken}
+                            value={analysedTranscript}
                             style={{
-                                marginTop: '1rem'
+                                marginTop: '1rem',                                
                             }}
                         />
                     </Grid>
@@ -181,4 +175,4 @@ const TextToSpeech: FC<any> = (): ReactElement => {
     );
 };
 
-export default TextToSpeech;
+export default TextAnalysis;
