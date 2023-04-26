@@ -11,6 +11,12 @@ This is the Shared APIs project for the AOAI Hackathon repository. It's an Expre
 1. Go to the Azure portal and create a Speech resource.   
     1. After the deployment is complete, fetch your api key and region (you will need this later)
     1. Access the speech studio at [https://speech.microsoft.com/](https://speech.microsoft.com/)
+1. Go to the Azure portal and create a Language resource.
+    1. After the deployment is complete, fetch your api key and region (you will need this later)
+    1. Access the Language studio at [https://language.cognitive.azure.com/](https://language.cognitive.azure.com/)
+1. Go to the Azure portal and create an Azure OpenAI resource.
+    1. After the deployment is complete, fetch your api key and region (you will need this later)
+    1. Access the Azure OpenAI studio at [https://oai.azure.com/](https://oai.azure.com/)
 
 #### Development Environment
 - Node.js (>=18.x)
@@ -34,11 +40,22 @@ This is the Shared APIs project for the AOAI Hackathon repository. It's an Expre
     ```sh
     cp .env-sample .env
     ```
-    ```env
-    SPEECH_KEY="ADD-YOUR-SPEECH-KEY"
-    SPEECH_REGION="ADD-YOUR-SPEECH-REGION"
+    The file should look like so:
+    ```    
+    SPEECH_KEY=""
+    SPEECH_REGION=""
     SPEECH_ENDPOINT_URL_OPTIONAL=""
+    LANGUAGE_KEY=""
+    LANGUAGE_REGION=""
+    LANGUAGE_ENDPOINT_URL=""
+    OPENAI_TYPE="azure"
+    OPENAI_KEY=""
+    OPENAI_AZURE_BASE_URL_OPTIONAL=""
+    OPENAI_AZURE_API_VERSION_OPTIONAL=""
+
     ```
+    
+
 5. Start the development server:
     ```sh
     npm run start
