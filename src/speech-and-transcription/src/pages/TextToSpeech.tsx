@@ -81,8 +81,15 @@ const TextToSpeech: FC<any> = (): ReactElement => {
     }
 
     const initialise = async () => {
-        // Create an instance of the speech recogniser        
-        setSynthesiser(await speechService.initialiseSynthesizerAsync(onSynthesisCompleted, onWordBoundary));
+        try {
+            // Create an instance of the speech recogniser        
+            setSynthesiser(await speechService.initialiseSynthesizerAsync(onSynthesisCompleted, onWordBoundary));
+        } catch (error: any) {
+            setErrors((prev:any) => {
+                return [...prev, error.message];
+            });
+        }
+        
     };
 
     useEffect(() => {
