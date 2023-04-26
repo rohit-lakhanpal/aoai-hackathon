@@ -18,9 +18,9 @@ The shared-apis project must be running (follow the instructions in [shared-apis
     ```sh
     git clone https://github.com/rohit-lakhanpal/aoai-hackathon.git
     ```
-2. Change to the `speech-and-transcription` directory:
+2. Change to the `ui` directory:
     ```sh
-    cs src/speech-and-transcription
+    cs src/ui
     ```
 3. Install the dependencies:
     ```sh

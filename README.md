@@ -3,7 +3,7 @@
 Welcome to the AOAI Hackathon repository! This repository aims to assist organizations in conducting internal hackathons to investigate the potential benefits that democratized AI (powered by Azure) offers to SaaS businesses. Included within this repository are two projects showcasing the functionalities of different Azure Cognitiv Services:
 
 1. [Shared APIs](./src/shared-apis/) - An Express app that provides helper APIs to call Azure Speech Services.
-2. [Speech and Transcription](./src/speech-and-transcription/) - A React + Material UI web app that demonstrates speech-to-text and text-to-speech capabilities.
+2. [Speech and Transcription](./src/ui/) - A React + Material UI web app that demonstrates speech-to-text, text-to-speech, text analytics and NLG capabilities.
 
 ## Hackathon Best Practices
 
@@ -20,7 +20,7 @@ Here are some best practice recommendations for running hackathons:
 To get started, please follow the instructions provided in the respective README files for each project:
 
 1. [Shared APIs README](./src/shared-apis/)
-2. [Speech and Transcription README](./src/speech-and-transcription/)
+2. [Speech and Transcription README](./src/ui/)
 
 ## Contributing
 

@@ -11,6 +11,7 @@ const TextToSpeech: FC<any> = (): ReactElement => {
     const [transcript, setTranscript] = useState<string>('');
     const [isSpeaking, setIsSpeaking] = useState<boolean>(false);    
     const [synthesiser, setSynthesiser] = useState<any>(null);
+    const [player, setPlayer] = useState<any>(null);
     const [errors, setErrors] = useState<any>([]);
     const [warnings, setWarnings] = useState<any>([]);
 
@@ -37,7 +38,8 @@ const TextToSpeech: FC<any> = (): ReactElement => {
                 return [...prev, 'Transcript is empty, nothing to speak!'];
             });
         } else {
-            setIsSpeaking(true);
+            //await initialise();
+            setIsSpeaking(true);                      
             synthesiser.speakTextAsync(transcript, (result: any) => {
                 if (result.reason === speechsdk.ResultReason.SynthesizingAudioCompleted) {
                     console.log("synthesis finished.");                    
@@ -59,11 +61,17 @@ const TextToSpeech: FC<any> = (): ReactElement => {
     };
 
     const stopSpeaking = async () => {
-        setIsSpeaking(false);            
+        setIsSpeaking(false);                  
+        player.pause();
+    };
+
+    const reload = async () => {
+        window.location.reload();
     };
 
     const onWordBoundary = (sender: any, event: {privText:string, privAudioOffset: number, privDuration: number}) => {
         var wordOffset = event.privAudioOffset / 10000;
+        wordOffset += 1000; // adding buffer
         setLastWordOffset(wordOffset)
         setTimeout(() => {
             // YOUR_CODE_HERE
@@ -75,15 +83,17 @@ const TextToSpeech: FC<any> = (): ReactElement => {
 
     const onSynthesisCompleted = () => {        
         setTimeout(() => {
-            setWordsSpoken('');
+            // setWordsSpoken('');
             setIsSpeaking(false);
         }, (lastWordOffset));
     }
 
     const initialise = async () => {
         try {
-            // Create an instance of the speech recogniser        
-            setSynthesiser(await speechService.initialiseSynthesizerAsync(onSynthesisCompleted, onWordBoundary));
+            // Create an instance of the speech recogniser     
+            var initialisationResult = await speechService.initialiseSynthesizerAsync(onSynthesisCompleted, onWordBoundary)   
+            setSynthesiser(initialisationResult?.synthesizer);
+            setPlayer(initialisationResult?.player);
         } catch (error: any) {
             setErrors((prev:any) => {
                 return [...prev, error.message];
@@ -144,8 +154,19 @@ const TextToSpeech: FC<any> = (): ReactElement => {
                         <Button onClick={stopSpeaking}
                             variant="contained"
                             color="error"
+                            startIcon={<CampaignIcon />}
+                            style={{
+                                marginRight: '1rem'
+                            }}
+                            >
+                            Stop speaking!
+                        </Button>
+
+                        <Button onClick={reload}
+                            variant="contained"
+                            color="warning"
                             startIcon={<CampaignIcon />}>
-                            Stop speaking.
+                            Reset.
                         </Button>
                         <Box hidden={!isSpeaking}>
                             <Alert severity="info">
@@ -181,7 +202,7 @@ const TextToSpeech: FC<any> = (): ReactElement => {
                                 marginTop: '1rem'
                             }}
                         />
-                    </Grid>
+                    </Grid>                    
                 </Grid>
             </Container>
         </Box>

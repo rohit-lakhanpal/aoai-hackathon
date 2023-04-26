@@ -43,7 +43,7 @@ const initialiseSynthesizerAsync = async (onSynthesisCompleted: any, onWordBound
     const token = await getTokenOrRefreshAsync();
     let synthesizer = null; 
 
-    if(token && token.error === undefined) {
+    if(token && token.error === undefined) {        
         const speechConfig = speechsdk.SpeechConfig.fromAuthorizationToken(
             token.authToken,
             token.region);                    
@@ -53,11 +53,15 @@ const initialiseSynthesizerAsync = async (onSynthesisCompleted: any, onWordBound
         speechConfig.speechSynthesisVoiceName = "en-US-JennyNeural";
         speechConfig.requestWordLevelTimestamps();
         
-        const audioConfig = speechsdk.AudioConfig.fromDefaultSpeakerOutput();
+        const player = new speechsdk.SpeakerAudioDestination();
+        const audioConfig = speechsdk.AudioConfig.fromSpeakerOutput(player);
         synthesizer = new speechsdk.SpeechSynthesizer(speechConfig, audioConfig);
         synthesizer.wordBoundary = onWordBoundary;
         synthesizer.synthesisCompleted = onSynthesisCompleted;
-        return synthesizer;      
+        return {
+            synthesizer: synthesizer,
+            player: player
+        };      
     } else {
         if(token && token.error && token.error)
         {
